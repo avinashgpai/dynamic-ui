@@ -1,0 +1,22 @@
+@keyframes animateIconRandom {
+    0% {
+        transform: scale(1) rotate(0) translateX(-20px);
+        opacity: 0;
+    }
+    25%{
+        transform: scale(1) rotate(0)  translateX(0px);
+        opacity: 1;
+    }
+    50%{
+        transform: scale(1.5) rotate(360deg)  translateX(0px);
+        opacity: 1;
+    }
+    75%{
+        transform: scale(1) rotate(0) translateX(0px);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(0) translateX(20px);
+        opacity: 0;
+    }
+}

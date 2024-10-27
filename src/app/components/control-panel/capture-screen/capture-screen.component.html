@@ -1,0 +1,72 @@
+<div class="fixed top-5 left-5 z-40" id="capture-screen">
+    <div class="group">
+        <div [ngClass]="{'translate-x-0': !previewMode, '-translate-x-20': previewMode}"
+            class="p-2 scale-110 flex place-content-center items-center rounded-full hover:scale-125 cursor-pointer shadow-lg border border-indigo-500 hover:bg-indigo-700 hover:border-indigo-700 hover:text-white text-indigo-500 duration-300 ease-in-out"
+            (click)="crop()">
+            <mat-icon>photo_camera</mat-icon>
+        </div>
+        <div [ngClass]="{'translate-x-0': !previewMode, '-translate-x-96': previewMode}"
+            class="absolute flex flex-col place-content-center items-center bottom-0.5 left-14 max-w-80 min-w-36 z-10 px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg shadow-sm tooltip invisible opacity-0 group-hover:visible group-hover:opacity-100 duration-300 ease-in-out">
+            <div>Capture Screen</div>
+            <mat-icon class="text-gray-700 absolute bottom-0 -left-[18px] text-[32px] !w-8 !h-8">arrow_left</mat-icon>
+        </div>
+    </div>
+
+    <canvas #screenshotCanvas class="hidden"></canvas>
+</div>
+<div class="w-dvw h-dvh fixed top-0 left-0 z-[100]" *ngIf="capturingImage && top && left && width && height">
+    <div class="fixed group bg-transparent border-dashed border-[3px] rounded-md shadow-[0_0_0_10000px_#00000070] border-gray-400 hover:!border-gray-600"
+        [ngClass]="{'!cursor-grabbing': grabbing, '!cursor-grab': !grabbing}"
+        [ngStyle]="{'top': top+'px', 'left': left+'px', 'width': width+'px', 'height': height+'px'}" appDrag
+        (dragstart)="onDragStart('drag',$event)" (drag)="onDrag('drag',$event)" (dragend)="onDragEnd('drag',$event)">
+        <div id="resize-pointers" class="h-full">
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-nwse-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-400 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="top-left" appDrag (dragstart)="onDragStart('top-left',$event)" (drag)="onDrag('top-left',$event)"
+                (dragend)="onDragEnd('top-left',$event)"
+                [ngStyle]="{'top': (top - 12)+'px', 'left': (left - 10 )+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-row-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-400 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="top-middle" appDrag (dragstart)="onDragStart('top-middle',$event)"
+                (drag)="onDrag('top-middle',$event)" (dragend)="onDragEnd('top-middle',$event)"
+                [ngStyle]="{'top': (top - 12)+'px', 'left': ((left + (width/2) - 10))+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-nesw-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-400 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="top-right" appDrag (dragstart)="onDragStart('top-right',$event)" (drag)="onDrag('top-right',$event)"
+                (dragend)="onDragEnd('top-right',$event)"
+                [ngStyle]="{'top': (top - 12)+'px', 'left': (left + width - 10)+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-col-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-400 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="middle-right" appDrag (dragstart)="onDragStart('middle-right',$event)"
+                (drag)="onDrag('middle-right',$event)" (dragend)="onDragEnd('middle-right',$event)"
+                [ngStyle]="{'top': ((top + (height/2) - 10))+'px', 'left': (left + width - 10)+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-nwse-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-400 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="bottom-right" appDrag (dragstart)="onDragStart('bottom-right',$event)"
+                (drag)="onDrag('bottom-right',$event)" (dragend)="onDragEnd('bottom-right',$event)"
+                [ngStyle]="{'top': (top + height - 12)+'px', 'left': (left + width - 10)+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-row-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-400 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="bottom-middle" appDrag (dragstart)="onDragStart('bottom-middle',$event)"
+                (drag)="onDrag('bottom-middle',$event)" (dragend)="onDragEnd('bottom-middle',$event)"
+                [ngStyle]="{'top': (top + height - 12)+'px', 'left': ((left + (width/2) - 10))+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-nesw-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-400 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="bottom-left" appDrag (dragstart)="onDragStart('bottom-left',$event)"
+                (drag)="onDrag('bottom-left',$event)" (dragend)="onDragEnd('bottom-left',$event)"
+                [ngStyle]="{'top': (top + height - 12)+'px', 'left': (left - 10)+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-col-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-400 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="middle-left" appDrag (dragstart)="onDragStart('middle-left',$event)"
+                (drag)="onDrag('middle-left',$event)" (dragend)="onDragEnd('middle-left',$event)"
+                [ngStyle]="{'top': ((top + (height/2) - 10))+'px', 'left': (left - 10)+'px'}">brightness_1</mat-icon>
+        </div>
+    </div>
+
+    <div class="w-dvw h-max fixed bottom-10 left-0 z-[101] flex place-content-center items-center">
+        <button class="p-2 px-4 rounded-md bg-gray-500 text-gray-100 hover:bg-gray-600 duration-300 ease-in-out"
+            (click)="capturingImage = false">Cancel</button>
+        <button class="ml-1 p-2 px-4 rounded-md bg-gray-500 text-gray-100 hover:bg-gray-600 duration-300 ease-in-out"
+            (click)="capture()">Capture</button>
+    </div>
+</div>

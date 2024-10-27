@@ -1,0 +1,49 @@
+<div id="export-import-json">
+    <div class="fixed top-5 right-5 z-50 cursor-pointer text-white flex place-content-center items-center w-max rounded-md scale-110">
+        <div class="p-2 rounded-l-md bg-indigo-500 hover:bg-indigo-800 flex place-content-center items-center hover:scale-110 duration-100 ease-in-out border border-r-white" (click)="import()">
+            <mat-icon class="rotate-180">save_alt</mat-icon>
+        </div>
+        <div class="p-2 rounded-r-md bg-indigo-500 hover:bg-indigo-800 flex place-content-center items-center hover:scale-110 duration-100 ease-in-out border border-l-white" (click)="export()">
+            <mat-icon>save_alt</mat-icon>
+        </div>
+    </div>
+    
+    <div class="w-96 cursor-default fixed top-20 right-5 z-40 rounded-lg shadow-lg bg-white border border-blue-100 p-4 flex flex-col place-content-center items-center duration-300 ease-in-out" [ngClass]="{'translate-y-0': showImportBox, '-translate-y-96': !showImportBox}">
+        <div class="absolute top-3 right-3">
+            <mat-icon class="cursor-pointer text-gray-400 hover:text-gray-500 hover:scale-110 duration-100 ease-in-out" (click)="showImportBox = false; filteredFile = null;">close</mat-icon>
+        </div>
+        <div class="rounded-full bg-indigo-100 text-indigo-500 p-3 mb-5 w-16 h-16 flex place-content-center items-center">
+            <mat-icon class="scale-125">insert_drive_file</mat-icon>
+        </div>
+        <div class="flex place-content-between items-center p-2 text-xl">
+            <div class="cursor-pointer text-indigo-500 hover:text-indigo-600 mr-2 hover:scale-105 duration-100 ease-in-out" (click)="triggerFileInput()">Click here</div> to upload your file
+        </div>
+        <div class="flex place-content-between items-center p-2">
+            <div class="text-gray-400">Supported format: JSON</div>
+        </div>
+        <input hidden type="file" #fileInput (change)="onFileSelected($event)" accept=".json"/>
+    </div>
+    
+    <div class="w-96 cursor-default fixed top-72 right-5 z-30 rounded-lg shadow-lg bg-white border border-blue-100 p-2 flex flex-col place-content-center items-center duration-500 ease-in-out" [ngClass]="{'translate-y-0': showImportBox && filteredFile, '-translate-y-40': showImportBox && !filteredFile, '-translate-y-[425px]': !showImportBox}">
+        <div *ngIf="filteredFile" class="flex flex-col place-content-evenly items-center w-full">
+            <div class="w-full flex place-content-between items-center p-2">
+                <div class="py-1 px-3 rounded-md bg-slate-100 text-gray-500 font-medium">{{filteredFile.FileName}}</div>
+                <div class="text-green-400 duration-300 ease-in-out" [ngClass]="{'scale-0': filteredFile.FileProgress != 100, 'scale-100': filteredFile.FileProgress == 100}">
+                    <mat-icon>check_circle</mat-icon>
+                </div>
+            </div>
+    
+            <div class="w-full min-h-1 p-2">
+                <div [style]="'width:'+filteredFile.FileProgress+'%'" [ngClass]="{'bg-indigo-700':filteredFile.FileProgress < 100 , 'bg-green-400':filteredFile.FileProgress == 100}" class="h-[0.35rem] rounded-l-full rounded-r-full"></div>
+            </div>
+    
+            <div class="w-full flex place-content-between items-center p-2">
+                <div class="py-1 px-3 rounded-md bg-slate-100 text-gray-400">{{filteredFile.FileProgessSize}}</div>
+                <div class="py-1 px-3 rounded-md bg-slate-100 text-gray-400">{{filteredFile.FileProgress}}%</div>
+            </div>
+    
+        </div>
+    </div>
+    
+    
+</div>

@@ -1,0 +1,298 @@
+<div id="edit-meta-data" class="min-w-[400px] max-w-[400px] fixed z-50 translate-x-0 translate-y-0 rounded-lg bg-white origin-top-left h-max border border-blue-500 drop-shadow-[0px_0px_15px_rgba(0,0,100,0.25)] cursor-default"
+    *ngIf="previewMode && activeMetaData"
+    [ngClass]="{'animate-[scaleUp_0.3s_ease-in-out_forwards]':activeMetaData}"
+    [ngStyle]="{'left': left+'px', 'top': top+'px'}">
+    <div class="flex place-content-center items-center p-2">
+        <div class="group flex p-[2px] hover:bg-indigo-100 text-gray-300 hover:!text-indigo-500 rounded-md duration-300 ease-in-out" [ngClass]="{'cursor-grabbing': dragging, 'cursor-grab': !dragging}" appDrag (dragstart)="onDragStart($event)" (drag)="onDrag($event)"
+        (dragend)="onDragEnd($event)">
+            <mat-icon class="relative left-[3px] rotate-90 !flex items-center" >drag_indicator</mat-icon>
+            <mat-icon class="relative left-[-3px] rotate-90 !flex items-center">drag_indicator</mat-icon>
+        </div>
+    </div>
+    <div class="absolute top-1 right-1 w-8 h-8 hover:bg-indigo-100 rounded-full p-1 text-gray-400 hover:text-indigo-500 duration-200 ease-in-out cursor-pointer" (click)="close()">
+        <mat-icon>close</mat-icon>
+    </div>
+    <div class="flex flex-col items-center p-3 pt-0">
+        <div class="w-full p-3 bg-blue-200/70 text-blue-800 rounded-md flex flex-col place-content-center items-center">
+            <div class="bg-white p-2 rounded-full w-10 h-10 scale-110">
+                <mat-icon>tune</mat-icon>
+            </div>
+            <div class="text-xl pt-2 text-blue-800">Customizer</div>
+            <div class="text-gray-400 bg-white rounded-full p-2 px-3 my-1 w-max flex place-content-center items-center">Modifying attributes for<span class="text-gray-600 font-medium ml-1">{{activeMetaData.id}}</span></div>
+        </div>
+
+        <form [formGroup]="form" class="relative flex flex-col place-content-center items-centerrounded-md m-2 mb-0 w-full" [ngSwitch]="true">
+            <div class="w-full flex place-content-center items-center">
+                <div class="bg-blue-700 text-white rounded-full p-1 px-4 w-max">Type: {{activeMetaData.display}}</div>
+            </div>
+
+            <div class="border border-blue-600 rounded-md mt-2 duration-100 ease-in-out" [ngClass]="{'h-8':phase != 'icon'}" *ngIf="activeMetaData.type == 'icon'">
+                <div class="flex place-content-between items-center p-[3px] pr-4 bg-blue-200 text-blue-700 cursor-pointer" [ngClass]="{'border-b border-b-blue-300 !rounded-t-md': phase == 'icon', 'rounded-md': phase != 'icon'}" (click)="phase='icon'">
+                    <mat-icon>{{phase == 'icon' ? 'keyboard_arrow_down': 'keyboard_arrow_up'}}</mat-icon>
+                    <div >Icon</div>
+                </div>
+                <div class="pb-3 px-4" [ngClass]="{'hidden':phase != 'icon'}">
+                    <div class="w-full pt-3">
+                        <div class="text-black ">Icon Label: </div>
+                        <div class="relative w-full">
+                            <mat-select [placeholder]="'Select a icon ...'" class="relative top-1 !flex place-content-center items-center p-3 border border-[#A8A8A8] rounded-lg bg-white" formControlName="icon" [panelClass]="'custom-single-select-dropdown'">
+                                <mat-select-trigger>
+                                    <span class="flex place-content-between items-center">
+                                        <mat-icon *ngIf="form.get('icon').value">{{ form.get('icon').value }}</mat-icon>
+                                        <div class="capitalize">{{form.get('icon').value ? form.get('icon').value.replaceAll("_"," ") : null}}</div>
+                                    </span>
+                                </mat-select-trigger>
+                                <mat-option *ngFor="let option of iconsList" [value]="option">
+                                    <div class="flex place-content-between items-center">
+                                        <mat-icon>{{ option }}</mat-icon>
+                                        <div class="capitalize">{{ option.replaceAll("_"," ") }}</div>
+                                    </div>
+                                </mat-option>
+                            </mat-select>
+                        </div>
+                    </div>
+                </div>
+            </div>        
+            
+            <div class="border border-blue-600 rounded-md mt-2 duration-100 ease-in-out" [ngClass]="{'h-8':phase != 'text'}" *ngIf="activeMetaData.type != 'iframe' && activeMetaData.type != 'image' && activeMetaData.type != 'container' && activeMetaData.type != 'form' && activeMetaData.type != 'grid' && activeMetaData.type != 'color' && activeMetaData.type != 'checkbox' && activeMetaData.type != 'radio'">
+                <div class="flex place-content-between items-center p-[3px] pr-4 bg-blue-200 text-blue-700 cursor-pointer" [ngClass]="{'border-b border-b-blue-300 !rounded-t-md': phase == 'text', 'rounded-md': phase != 'text'}" (click)="phase='text'">
+                    <mat-icon>{{phase == 'text' ? 'keyboard_arrow_down': 'keyboard_arrow_up'}}</mat-icon>
+                    <div >Text</div>
+                </div>
+                <div class="pb-3 px-4" [ngClass]="{'hidden':phase != 'text'}">
+                    <div class="w-full pt-3" *ngSwitchCase="activeMetaData.type == 'label' || activeMetaData.type == 'button'">
+                        <div class="text-black ">Label Text: </div>
+                        <div class="relative w-full">
+                            <div class="absolute inset-y-0 flex items-center pointer-events-none end-1 rotate-180 font-">
+                                <mat-icon class="text-gray-300">label</mat-icon>
+                            </div>
+                            <input type="text" id="label" class="block w-full p-2 pr-8 h-9 text-sm text-black  border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" formControlName="label" placeholder="Enter Label Text ..."/>
+                        </div>
+                    </div>
+                    <div class="w-full pt-3" *ngSwitchCase="activeMetaData.type == 'text' || activeMetaData.type == 'number'">
+                        <div class="text-black ">Placeholder Text: </div>
+                        <div class="relative w-full">
+                            <div class="absolute inset-y-0 flex items-center pointer-events-none end-1 rotate-180 font-">
+                                <mat-icon class="text-gray-300">label</mat-icon>
+                            </div>
+                            <input type="text" id="Placeholder" class="block w-full p-2 pr-8 h-9 text-sm text-black  border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" formControlName="placeholder" placeholder="Enter Placeholder Text ..."/>
+                        </div>
+                    </div>
+                    <div class="w-full pt-3" *ngSwitchCase="activeMetaData.type == 'label' || activeMetaData.type == 'button' || activeMetaData.type == 'text' || activeMetaData.type == 'number' || activeMetaData.type == 'date'">
+                        <div class="text-black ">Font Size: </div>
+                        <div class="relative w-full flex place-content-between items-center">
+                            <input type="range" min="0" [max]="activeMetaData.style.height > activeMetaData.style.width ? activeMetaData.style.width: activeMetaData.style.height" step="1" id="font-size" class="block w-11/12 h-9" formControlName="fontSize"/>
+                            <div class="text-blue-600 ml-2">{{form.get('fontSize').value}}</div>
+                            <div class="text-gray-400 ml-1 text-sm text-nowrap">(in px)</div>
+                        </div>
+                    </div>
+                    <div class="w-full flex flex-col pt-3 place-content-between items-start" *ngSwitchCase="activeMetaData.type != 'iframe' && activeMetaData.type != 'image'">
+                        <div class="text-black  text-nowrap">Font Color: </div>
+                        <div class="relative w-full h-max flex place-content-between items-center">
+                            <div class="bg-gray-100 rounded-md p-1 px-3 text-blue-600">{{form.get('textColor').value && form.get('textColor').value != ''? form.get('textColor').value : '#000000'}}</div> 
+                            <input type="color" id="text-color" class="inputColor block cursor-pointer w-10 h-10 p-1 text-sm text-black  border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500"  formControlName="textColor"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border border-blue-600 rounded-md mt-2 duration-100 ease-in-out" [ngClass]="{'h-8':phase != 'grid'}" *ngIf="activeMetaData.type == 'grid'">
+                <div class="flex place-content-between items-center p-[3px] pr-4 bg-blue-200 text-blue-700 cursor-pointer" [ngClass]="{'border-b border-b-blue-300 !rounded-t-md': phase == 'grid', 'rounded-md': phase != 'grid'}" (click)="phase='grid'">
+                    <mat-icon>{{phase == 'grid' ? 'keyboard_arrow_down': 'keyboard_arrow_up'}}</mat-icon>
+                    <div >Grid</div>
+                </div>
+                <div class="pb-3 px-4" [ngClass]="{'hidden':phase != 'grid'}">
+                    <div class="w-full pt-3">
+                        <div class="text-black ">Grid Column(s): </div>
+                        <div class="relative w-full flex place-content-between items-center">
+                            <input type="range" min="1" max="12" step="1" id="grid-col" class="block w-11/12 h-9" formControlName="gridColCount"/>
+                            <div class="text-blue-600 ml-2">{{form.get('gridColCount').value}}</div>
+                        </div>
+                    </div>
+                    <div class="w-full pt-3">
+                        <div class="text-black ">Grid Row(s): </div>
+                        <div class="relative w-full flex place-content-between items-center">
+                            <input type="range" min="1" max="12" step="1" id="grid-row" class="block w-11/12 h-9" formControlName="gridRowCount"/>
+                            <div class="text-blue-600 ml-2">{{form.get('gridRowCount').value}}</div>
+                        </div>
+                    </div>
+                    <div class="w-full pt-3">
+                        <div class="text-black ">Grid Gap: </div>
+                        <div class="relative w-full flex place-content-between items-center">
+                            <input type="range" min="0" [max]="activeMetaData.style.height> activeMetaData.style.width ? activeMetaData.style.width : activeMetaData.style.height" step="1" id="grid-row" class="block w-11/12 h-9" formControlName="gridGap"/>
+                            <div class="text-blue-600 ml-2">{{form.get('gridGap').value}}</div>
+                            <div class="text-gray-400 ml-1 text-sm text-nowrap">(in px)</div>
+                        </div>
+                    </div>
+                    <div class="w-full pt-3">
+                        <div class="text-black ">Grid Cell Background Color Type: </div>
+                        <div class="relative w-full">
+                            <mat-select [placeholder]="'Select a type ...'" class="relative top-1 multi-select-trigger px-3 py-1.5 border border-[#A8A8A8] rounded-lg bg-white" formControlName="gridCellColorType" [panelClass]="'custom-single-select-dropdown'">
+                                <mat-option *ngFor="let option of bgOptions" [value]="option">{{ option }}</mat-option>
+                            </mat-select>
+                        </div>
+                    </div>
+                    <div class="w-full pt-3" *ngSwitchCase="form.get('gridCellColorType').value == 'Line Gradient'">
+                        <div class="text-black ">Grid Color Mix Direction Type: </div>
+                        <mat-radio-group class="" formControlName="gridLinearGradientDirectionType">
+                            <mat-radio-button value="Definite direction" class="w-full p-2 border border-indigo-100 rounded-md text-gray-500"  (click)="form.patchValue({'gridLinearGradientDirection': 'to top right'})">Definite direction</mat-radio-button>
+                            <mat-radio-button value="Angle" class="w-full p-2 border border-indigo-100 rounded-md text-gray-500" (click)="form.patchValue({'gridLinearGradientDirection': 45})">Angle</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div class="w-full pt-3" *ngSwitchCase="form.get('gridCellColorType').value == 'Line Gradient'">
+                        <div class="text-black ">Grid Color Mix Direction: </div>
+                        <div class="relative w-full"  *ngSwitchCase="form.get('gridLinearGradientDirectionType').value == 'Definite direction'">
+                            <mat-select [placeholder]="'Select a type ...'" class="relative top-1 multi-select-trigger px-3 py-1.5 border border-[#A8A8A8] rounded-lg bg-white" formControlName="gridLinearGradientDirection" [panelClass]="'custom-single-select-dropdown'">
+                                <mat-option *ngFor="let option of linearGradientDirectionOptions" [value]="option" class="capitalize">{{ option }}</mat-option>
+                            </mat-select>
+                        </div>
+                        <div class="relative w-full flex place-content-between items-center"  *ngSwitchCase="form.get('gridLinearGradientDirectionType').value == 'Angle'">
+                            <input type="range" min="0" max="359" step="1" id="grid-col" class="block w-11/12 h-9" formControlName="gridLinearGradientDirection"/>
+                            <div class="text-blue-600 ml-2">{{form.get('gridLinearGradientDirection').value}}</div>
+                            <div class="text-gray-400 ml-1 text-sm text-nowrap">(in deg)</div>
+                        </div>
+                    </div>
+                    <div class="w-full flex flex-col pt-3 place-content-between items-start" *ngSwitchCase="form.get('gridCellColorType').value != 'Line Gradient'">
+                        <div class="text-black  text-nowrap">Grid Cell Background Color: </div>
+                        <div class="relative w-full h-max flex place-content-between items-center">
+                            <div class="bg-gray-100 rounded-md p-1 px-3 text-blue-600">{{form.get('gridCellColor').value && form.get('gridCellColor').value != ''? form.get('gridCellColor').value : '#000000'}}</div> 
+                            <input type="color" id="grid-cell-color" class="inputColor block cursor-pointer w-10 h-10 p-1 text-sm text-black  border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500"  formControlName="gridCellColor"/>
+                        </div>
+                    </div>
+                    <div class="w-full flex flex-col pt-3 place-content-between items-start" *ngSwitchCase="form.get('gridCellColorType').value == 'Line Gradient'">
+                        <div class="text-black  text-nowrap">Grid Cell From Color: </div>
+                        <div class="relative w-full h-max flex place-content-between items-center">
+                            <div class="bg-gray-100 rounded-md p-1 px-3 text-blue-600">{{form.get('gridFromBackGroundColor').value && form.get('gridFromBackGroundColor').value != ''? form.get('gridFromBackGroundColor').value : '#000000'}}</div> 
+                            <input type="color" id="from-bg-color" class="inputColor block cursor-pointer w-10 h-10 p-1 text-sm text-black  border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500"  formControlName="gridFromBackGroundColor"/>
+                        </div>
+                    </div>
+                    <div class="w-full flex flex-col pt-3 place-content-between items-start" *ngSwitchCase="form.get('gridCellColorType').value == 'Line Gradient'">
+                        <div class="text-black  text-nowrap">Grid Cell To Color: </div>
+                        <div class="relative w-full h-max flex place-content-between items-center">
+                            <div class="bg-gray-100 rounded-md p-1 px-3 text-blue-600">{{form.get('gridToBackGroundColor').value && form.get('gridToBackGroundColor').value != ''? form.get('gridToBackGroundColor').value : '#000000'}}</div> 
+                            <input type="color" id="to-bg-color" class="inputColor block cursor-pointer w-10 h-10 p-1 text-sm text-black  border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500"  formControlName="gridToBackGroundColor"/>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+
+            <div class="border border-blue-600 rounded-md mt-2 duration-100 ease-in-out" [ngClass]="{'h-8':phase != 'background'}" *ngIf="activeMetaData.type != 'image' && activeMetaData.type != 'iframe'">
+                <div class="flex place-content-between items-center p-[3px] pr-4 bg-blue-200 text-blue-700 cursor-pointer" [ngClass]="{'border-b border-b-blue-300 !rounded-t-md': phase == 'background', 'rounded-md': phase != 'background'}" (click)="phase='background'">
+                    <mat-icon>{{phase == 'background' ? 'keyboard_arrow_down': 'keyboard_arrow_up'}}</mat-icon>
+                    <div >Background</div>
+                </div>
+                <div class="pb-3 px-4" [ngClass]="{'hidden':phase != 'background'}">
+                    <div class="w-full pt-3">
+                        <div class="text-black ">Background Color Type: </div>
+                        <div class="relative w-full">
+                            <mat-select [placeholder]="'Select a type ...'" class="relative top-1 multi-select-trigger px-3 py-1.5 border border-[#A8A8A8] rounded-lg bg-white" formControlName="backGroundColorType" [panelClass]="'custom-single-select-dropdown'">
+                                <mat-option *ngFor="let option of bgOptions" [value]="option">{{ option }}</mat-option>
+                            </mat-select>
+                        </div>
+                    </div>
+                    <div class="w-full pt-3" *ngSwitchCase="form.get('backGroundColorType').value == 'Line Gradient'">
+                        <div class="text-black ">Color Mix Direction Type: </div>
+                        <mat-radio-group class="" formControlName="linearGradientDirectionType">
+                            <mat-radio-button value="Definite direction" class="w-full p-2 border border-indigo-100 rounded-md text-gray-500"  (click)="form.patchValue({'linearGradientDirection': 'to top right'})">Definite direction</mat-radio-button>
+                            <mat-radio-button value="Angle" class="w-full p-2 border border-indigo-100 rounded-md text-gray-500" (click)="form.patchValue({'linearGradientDirection': 45})">Angle</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div class="w-full pt-3" *ngSwitchCase="form.get('backGroundColorType').value == 'Line Gradient'">
+                        <div class="text-black ">Color Mix Direction: </div>
+                        <div class="relative w-full"  *ngSwitchCase="form.get('linearGradientDirectionType').value == 'Definite direction'">
+                            <mat-select [placeholder]="'Select a type ...'" class="relative top-1 multi-select-trigger px-3 py-1.5 border border-[#A8A8A8] rounded-lg bg-white" formControlName="linearGradientDirection" [panelClass]="'custom-single-select-dropdown'">
+                                <mat-option *ngFor="let option of linearGradientDirectionOptions" [value]="option" class="capitalize">{{ option }}</mat-option>
+                            </mat-select>
+                        </div>
+                        <div class="relative w-full flex place-content-between items-center"  *ngSwitchCase="form.get('linearGradientDirectionType').value == 'Angle'">
+                            <input type="range" min="0" max="359" step="1" id="grid-col" class="block w-11/12 h-9" formControlName="linearGradientDirection"/>
+                            <div class="text-blue-600 ml-2">{{form.get('linearGradientDirection').value}}</div>
+                            <div class="text-gray-400 ml-1 text-sm text-nowrap">(in deg)</div>
+                        </div>
+                    </div>
+                    <div class="w-full flex flex-col pt-3 place-content-between items-start" *ngSwitchCase="form.get('backGroundColorType').value != 'Line Gradient'">
+                        <div class="text-black  text-nowrap">Background Color: </div>
+                        <div class="relative w-full h-max flex place-content-between items-center">
+                            <div class="bg-gray-100 rounded-md p-1 px-3 text-blue-600">{{form.get('backGroundColor').value && form.get('backGroundColor').value != ''? form.get('backGroundColor').value : '#000000'}}</div> 
+                            <input type="color" id="bg-color" class="inputColor block cursor-pointer w-10 h-10 p-1 text-sm text-black  border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500"  formControlName="backGroundColor"/>
+                        </div>
+                    </div>
+                    <div class="w-full flex flex-col pt-3 place-content-between items-start" *ngSwitchCase="form.get('backGroundColorType').value == 'Line Gradient'">
+                        <div class="text-black  text-nowrap">From Color: </div>
+                        <div class="relative w-full h-max flex place-content-between items-center">
+                            <div class="bg-gray-100 rounded-md p-1 px-3 text-blue-600">{{form.get('fromBackGroundColor').value && form.get('fromBackGroundColor').value != ''? form.get('fromBackGroundColor').value : '#000000'}}</div> 
+                            <input type="color" id="from-bg-color" class="inputColor block cursor-pointer w-10 h-10 p-1 text-sm text-black  border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500"  formControlName="fromBackGroundColor"/>
+                        </div>
+                    </div>
+                    <div class="w-full flex flex-col pt-3 place-content-between items-start" *ngSwitchCase="form.get('backGroundColorType').value == 'Line Gradient'">
+                        <div class="text-black  text-nowrap">To Color: </div>
+                        <div class="relative w-full h-max flex place-content-between items-center">
+                            <div class="bg-gray-100 rounded-md p-1 px-3 text-blue-600">{{form.get('toBackGroundColor').value && form.get('toBackGroundColor').value != ''? form.get('toBackGroundColor').value : '#000000'}}</div> 
+                            <input type="color" id="to-bg-color" class="inputColor block cursor-pointer w-10 h-10 p-1 text-sm text-black  border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500"  formControlName="toBackGroundColor"/>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+
+            <div class="border border-blue-600 rounded-md mt-2 duration-100 ease-in-out" [ngClass]="{'h-8':phase != 'border'}" *ngIf="activeMetaData.type != 'image' && activeMetaData.type != 'iframe'">
+                <div class="flex place-content-between items-center p-[3px] pr-4 bg-blue-200 text-blue-700 cursor-pointer" [ngClass]="{'border-b border-b-blue-300 !rounded-t-md': phase == 'border', 'rounded-md': phase != 'border'}" (click)="phase='border'">
+                    <mat-icon>{{phase == 'border' ? 'keyboard_arrow_down': 'keyboard_arrow_up'}}</mat-icon>
+                    <div >Border</div>
+                </div>
+                <div class="pb-3 px-4" [ngClass]="{'hidden':phase != 'border'}">
+                    <!-- <div class="w-full py-4">
+                        <div class="text-black ">Border Type: </div>
+                        <div class="relative w-full">
+                            <mat-select [placeholder]="'Select multiple types ...'" disableOptionCentering="true" class="relative top-1 multi-select-trigger px-3 py-1.5 border border-[#A8A8A8] rounded-lg bg-white" multiple [panelClass]="'custom-multiple-select-dropdown'"  formControlName="borderType">
+                                <mat-option *ngFor="let option of borderOptions" [value]="option.value" [disabled]="option.disable" (click)="updateBorderOption(option, form.get('borderType').value, form.get('borderType').value.includes('Border Top'), form.get('borderType').value.includes('Border Right'), form.get('borderType').value.includes('Border Bottom'), form.get('borderType').value.includes('Border Left'))">{{ option.value }}</mat-option>
+                            </mat-select>
+                        </div>
+                    </div> -->
+                    <div class="w-full pt-3">
+                        <div class="text-black ">Border Style: </div>
+                        <div class="relative w-full">
+                            <mat-select [placeholder]="'Select a style ...'" class="relative top-1 px-3 py-1.5 border border-[#A8A8A8] rounded-lg bg-white" formControlName="borderStyle" [panelClass]="'custom-single-select-dropdown'">
+                                <mat-select-trigger>
+                                    <div class="capitalize">
+                                        {{form.get('borderStyle').value}}
+                                    </div>
+                                </mat-select-trigger>
+                                <mat-option *ngFor="let option of borderStyleOptions" [value]="option" class="capitalize">{{ option }}</mat-option>
+                            </mat-select>
+                        </div>
+                    </div>
+                    <div class="w-full pt-3">
+                        <div class="text-black ">Border Width: </div>
+                        <div class="relative w-full flex place-content-between items-center">
+                            <input type="range" min="0" max="10" step="1" id="border-width" class="block w-11/12 h-9" formControlName="borderWidth"/>
+                            <div class="text-blue-600 ml-2">{{form.get('borderWidth').value}}</div>
+                            <div class="text-gray-400 ml-1 text-sm text-nowrap">(in px)</div>
+                        </div>
+                    </div>
+                    <div class="w-full flex flex-col pt-3 place-content-between items-start">
+                        <div class="text-black  text-nowrap">Border Color: </div>
+                        <div class="relative w-full h-max flex place-content-between items-center">
+                            <div class="bg-gray-100 rounded-md p-1 px-3 text-blue-600">{{form.get('borderColor').value && form.get('borderColor').value != ''? form.get('borderColor').value : '#000000'}}</div> 
+                            <input type="color" id="border-color" class="inputColor block cursor-pointer w-10 h-10 p-1 text-sm text-black  border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500"  formControlName="borderColor"/>
+                        </div>
+                    </div>
+                    <div class="w-full pt-3">
+                        <div class="text-black ">Border Radius Type: </div>
+                        <mat-radio-group class="" formControlName="borderRadiusType">
+                            <mat-radio-button value="pixel" class="w-full p-2 border border-indigo-100 rounded-md text-gray-500"  (click)="form.patchValue({'borderRadius': 5})">Pixel</mat-radio-button>
+                            <mat-radio-button value="percentage" class="w-full p-2 border border-indigo-100 rounded-md text-gray-500" (click)="form.patchValue({'borderRadius': 2})">Percentage</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div class="w-full pt-3">
+                        <div class="text-black ">Border Radius: </div>
+                        <div class="relative w-full flex place-content-between items-center">
+                            <input type="range" min="0" [max]="form.get('borderRadiusType').value == 'percentage'? 50 : activeMetaData.style.height > activeMetaData.style.width ? activeMetaData.style.width : activeMetaData.style.height " step="1" id="border-width" class="block w-11/12 h-9" formControlName="borderRadius"/>
+                            <div class="text-blue-600 ml-2">{{form.get('borderRadius').value}}</div>
+                            <div class="text-gray-400 ml-1 text-sm text-nowrap">(in {{form.get('borderRadiusType').value == "percentage"? '%': 'px'}})</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

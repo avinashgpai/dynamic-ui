@@ -1,0 +1,9 @@
+<div class="w-dvw h-dvh" [ngClass]="{'cursor-cell': previewMode}" (mousemove)="setMousePosition($event)" (contextmenu)="openContextMenu($event)" (click)="updatePointer($event)" (keyup)="onKeyPress($event,'keyUp')" (keydown)="onKeyPress($event,'keyDown')" tabindex="0" #focusScreen>
+    <app-control-panel></app-control-panel>
+    <app-cursor-ref [previewMode]="previewMode"></app-cursor-ref>
+    <app-context-menu [open]="openCustomContextMenu"></app-context-menu>
+    <app-alignment-ref></app-alignment-ref>
+    <app-meta-data></app-meta-data>
+    <app-edit-meta-data [previewMode]="previewMode"></app-edit-meta-data>
+    <app-key-press-action></app-key-press-action>
+</div>

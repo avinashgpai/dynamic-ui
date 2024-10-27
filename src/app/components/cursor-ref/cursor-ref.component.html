@@ -1,0 +1,6 @@
+<div id="cursor-ref">
+    <div *ngFor="let ele of box">
+        <div  class="fixed w-dvw h-[1px] border border-slate-300 border-dashed left-0" [style]="'top:'+ele.y+'px'" [ngClass]="{'hidden':!previewMode}"></div>
+        <div  class="fixed h-dvh w-[1px] border border-slate-300 border-dashed top-0" [style]="'left:'+ele.x+'px'" [ngClass]="{'hidden':!previewMode}"></div>
+    </div>
+</div>

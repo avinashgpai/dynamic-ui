@@ -1,0 +1,59 @@
+@keyframes scaleUp {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes scaleDown {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
+}
+
+::ng-deep .custom-single-select-dropdown{
+    position: relative;
+    top: 30px;
+}
+
+::ng-deep .custom-multiple-select-dropdown{
+    position: relative;
+    top: 30px;
+    left: 7px
+}
+
+::ng-deep .mat-option-pseudo-checkbox.mat-pseudo-checkbox-checked {
+    background-color: #6200ff;
+}
+
+::ng-deep .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+    border-color: #6200ff;
+}
+
+::ng-deep .mat-radio-button.mat-accent .mat-radio-inner-circle, .mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple), .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-persistent-ripple, .mat-radio-button.mat-accent:active .mat-radio-persistent-ripple {
+    background-color: #6200ff;
+}
+
+::ng-deep .inputColor {
+    border: 1px solid gray;
+    border-radius: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+::ng-deep .inputColor::-webkit-color-swatch {
+    border: none;
+    border-radius: 10px;
+    padding: 0;
+}
+
+::ng-deep .inputColor::-webkit-color-swatch-wrapper {
+    border: none;
+    border-radius: 10px;
+    padding: 0;
+}

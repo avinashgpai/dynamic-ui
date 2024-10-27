@@ -1,0 +1,98 @@
+<div id="meta-data-config" #captureArea>
+    <ng-container *ngFor="let ele of metaData; let i = index;">
+        <ng-container [ngSwitch]="true">
+            <ng-container *ngSwitchCase="ele.type == 'container'">
+                <app-manage-meta-data [metaData]="ele" [previewMode]="previewMode" [indexOfMeaData]="i">
+                    <div
+                        [ngStyle]="{'position': ele.style.position, 'top': ele.style.top+'px', 'left': ele.style.left+'px', 'width': ele.style.width+'px', 'height': ele.style.height+'px', 'background-color': ele.style.backGroundColorType == 'Mono Color'? ele.style.backGroundColor : null, 'background-image': ele.style.backGroundColorType == 'Line Gradient'? 'linear-gradient('+ele.style.linearGradientDirection+','+ele.style.fromBackgroundColor+','+ele.style.toBackgroundColor+')' :  null, 'border-style': ele.style.borderStyle ? ele.style.borderStyle : null, 'border-width': (ele.style.borderWidth != 0 ? (ele.style.borderWidth +'px'): null), 'border-color': ( ele.style.borderWidth?  ele.style.borderColor: null ), 'border-radius': (ele.style.borderRadius ? ele.style.borderRadius : null ) }">
+                    </div>
+                </app-manage-meta-data>
+            </ng-container>
+            <ng-container *ngSwitchCase="ele.type == 'form'">
+                <app-manage-meta-data [metaData]="ele" [previewMode]="previewMode" [indexOfMeaData]="i">
+                    <form
+                        [ngStyle]="{'position': ele.style.position, 'top': ele.style.top+'px', 'left': ele.style.left+'px', 'width': ele.style.width+'px', 'height': ele.style.height+'px', 'background-color': ele.style.backGroundColorType == 'Mono Color'? ele.style.backGroundColor : null, 'background-image': ele.style.backGroundColorType == 'Line Gradient'? 'linear-gradient('+ele.style.linearGradientDirection+','+ele.style.fromBackgroundColor+','+ele.style.toBackgroundColor+')' :  null, 'border-style': ele.style.borderStyle ? ele.style.borderStyle : null, 'border-width': (ele.style.borderWidth != 0 ? (ele.style.borderWidth +'px'): null), 'border-color': ( ele.style.borderWidth?  ele.style.borderColor: null ), 'border-radius': (ele.style.borderRadius ? ele.style.borderRadius : null ) }">
+                    </form>
+                </app-manage-meta-data>
+            </ng-container>
+            <ng-container *ngSwitchCase="ele.type == 'grid'">
+                <app-manage-meta-data [metaData]="ele" [previewMode]="previewMode" [indexOfMeaData]="i">
+                    <div [ngStyle]="{'position': ele.style.position, 'top': ele.style.top+'px', 'left': ele.style.left+'px', 'width': ele.style.width+'px', 'height': ele.style.height+'px', 'background-color': ele.style.backGroundColorType == 'Mono Color'? ele.style.backGroundColor : null, 'background-image': ele.style.backGroundColorType == 'Line Gradient'? 'linear-gradient('+ele.style.linearGradientDirection+','+ele.style.fromBackgroundColor+','+ele.style.toBackgroundColor+')' :  null, 'grid-template-columns': 'repeat('+ ele.style.gridColumnCount +' , minmax(0, 1fr))', 'gap': ele.style.gridGap + 'px', 'border-style': ele.style.borderStyle ? ele.style.borderStyle : null, 'border-width': (ele.style.borderWidth != 0 ? (ele.style.borderWidth +'px'): null), 'border-color': ( ele.style.borderWidth?  ele.style.borderColor: null ), 'border-radius': (ele.style.borderRadius ? ele.style.borderRadius : null ) }"
+                        class="p-2 grid">
+                        <div class="!border !border-indigo-600 !border-dashed !rounded-md flex place-content-center items-center text-gray-400"
+                            [ngStyle]="{'background-color': ele.style.gridCellColorType == 'Mono Color'? ele.style.gridCellColor : null, 'background-image': ele.style.gridCellColorType == 'Line Gradient'? 'linear-gradient('+ele.style.gridLinearGradientDirection+','+ele.style.gridFromBackgroundColor+','+ele.style.gridToBackgroundColor+')' :  null}"
+                            *ngFor="let item of [].constructor(ele.style.gridColumnCount * ele.style.gridRowCount); let i = index">
+                            Cell {{i+1}}
+                            <!-- child node -->
+                        </div>
+                    </div>
+                </app-manage-meta-data>
+            </ng-container>
+            <ng-container *ngSwitchCase="ele.type == 'image'">
+                <app-manage-meta-data [metaData]="ele" [previewMode]="previewMode" [indexOfMeaData]="i">
+                    <img [ngStyle]="{'position': ele.style.position, 'top': ele.style.top+'px', 'left': ele.style.left+'px', 'width': ele.style.width+'px', 'height': ele.style.height+'px'}"
+                        [src]="ele.url" *ngIf="ele.url">
+                    <div *ngIf="!ele.url"
+                        [ngStyle]="{'position': ele.style.position, 'top': ele.style.top+'px', 'left': ele.style.left+'px', 'width': ele.style.width+'px', 'height': ele.style.height+'px'}"
+                        class="flex place-content-center items-center text-indigo-900">
+                        <mat-icon
+                            [ngStyle]="{'width': (ele.style.width > ele.style.height ? ele.style.height/2 : ele.style.width/2)+'px', 'height': (ele.style.width > ele.style.height ? ele.style.height/2 : ele.style.width/2)+'px', 'fontSize': (ele.style.width > ele.style.height ? ele.style.height/2 : ele.style.width/2)+'px'}">image</mat-icon>
+                    </div>
+                </app-manage-meta-data>
+            </ng-container>
+            <ng-container *ngSwitchCase="ele.type == 'label'">
+                <app-manage-meta-data [metaData]="ele" [previewMode]="previewMode" [indexOfMeaData]="i">
+                    <label
+                        [ngStyle]="{'position': ele.style.position, 'top': ele.style.top+'px', 'left': ele.style.left+'px', 'width': ele.style.width+'px', 'height': ele.style.height+'px', 'font-size': ele.style.fontSize+'px', 'color': ele.style.textColor, 'background-color': ele.style.backGroundColorType == 'Mono Color'? ele.style.backGroundColor : null, 'background-image': ele.style.backGroundColorType == 'Line Gradient'? 'linear-gradient('+ele.style.linearGradientDirection+','+ele.style.fromBackgroundColor+','+ele.style.toBackgroundColor+')' :  null, 'border-style': ele.style.borderStyle ? ele.style.borderStyle : null, 'border-width': (ele.style.borderWidth != 0 ? (ele.style.borderWidth +'px'): null), 'border-color': ( ele.style.borderWidth?  ele.style.borderColor: null ), 'border-radius': (ele.style.borderRadius ? ele.style.borderRadius : null ) }"
+                        class="text-center flex place-content-center items-center overflow-hidden bg-white ">{{ele.staticLabel?
+                        ele.staticLabel : ele.id}}</label>
+                </app-manage-meta-data>
+            </ng-container>
+            <ng-container
+                *ngSwitchCase="ele.type == 'text' || ele.type == 'number' || ele.type == 'date' || ele.type == 'color'">
+                <app-manage-meta-data [metaData]="ele" [previewMode]="previewMode" [indexOfMeaData]="i">
+                    <input [type]="ele.type"
+                        [ngStyle]="{'position': ele.style.position, 'top': ele.style.top+'px', 'left': ele.style.left+'px', 'width': ele.style.width+'px', 'height': ele.style.height+'px', 'font-size': (ele.type != 'color' ? ele.style.fontSize+'px' : null), 'color': (ele.type != 'color' ? ele.style.textColor : null), 'background-color': ele.style.backGroundColorType == 'Mono Color'? ele.style.backGroundColor : null, 'background-image': ele.style.backGroundColorType == 'Line Gradient'? 'linear-gradient('+ele.style.linearGradientDirection+','+ele.style.fromBackgroundColor+','+ele.style.toBackgroundColor+')' :  null, 'border-style': ele.style.borderStyle ? ele.style.borderStyle : null, 'border-width': (ele.style.borderWidth != 0 ? (ele.style.borderWidth +'px'): null), 'border-color': ( ele.style.borderWidth?  ele.style.borderColor: null ), 'border-radius': (ele.style.borderRadius ? ele.style.borderRadius : null ) }"
+                        class="border border-black rounded-md" [placeholder]="ele.placeholder ? ele.placeholder :'text field'" />
+                </app-manage-meta-data>
+            </ng-container>
+            <ng-container *ngSwitchCase="ele.type == 'checkbox' || ele.type == 'radio' || ele.type == 'range'">
+                <app-manage-meta-data [metaData]="ele" [previewMode]="previewMode" [indexOfMeaData]="i">
+                    <div class="flex place-content-center items-center"
+                        [ngStyle]="{'position': ele.style.position, 'top': ele.style.top+'px', 'left': ele.style.left+'px', 'width': ele.style.width+'px', 'height': ele.style.height+'px', 'background-color': ele.style.backGroundColorType == 'Mono Color'? ele.style.backGroundColor : null, 'background-image': ele.style.backGroundColorType == 'Line Gradient'? 'linear-gradient('+ele.style.linearGradientDirection+','+ele.style.fromBackgroundColor+','+ele.style.toBackgroundColor+')' :  null, 'border-style': ele.style.borderStyle ? ele.style.borderStyle : null, 'border-width': (ele.style.borderWidth != 0 ? (ele.style.borderWidth +'px'): null), 'border-color': ( ele.style.borderWidth?  ele.style.borderColor: null ), 'border-radius': (ele.style.borderRadius ? ele.style.borderRadius : null ) }">
+                        <input [type]="ele.type" checked
+                            [ngStyle]="{'width': ( ele.type != 'range' && ele.style.width > ele.style.height ? ele.style.height : ele.style.width)+'px', 'height': (ele.type != 'range' && ele.style.width > ele.style.height ? ele.style.height : ele.type == 'range' ? ele.style.height : ele.style.width)+'px'}"
+                            class="rounded-lg" />
+                    </div>
+                </app-manage-meta-data>
+            </ng-container>
+            <ng-container *ngSwitchCase="ele.type == 'icon'">
+                <app-manage-meta-data [metaData]="ele" [previewMode]="previewMode" [indexOfMeaData]="i">
+                    <div [ngStyle]="{'position': ele.style.position, 'top': ele.style.top+'px', 'left': ele.style.left+'px', 'width': ele.style.width+'px', 'height': ele.style.height+'px', 'background-color': ele.style.backGroundColorType == 'Mono Color'? ele.style.backGroundColor : null, 'background-image': ele.style.backGroundColorType == 'Line Gradient'? 'linear-gradient('+ele.style.linearGradientDirection+','+ele.style.fromBackgroundColor+','+ele.style.toBackgroundColor+')' :  null, 'border-style': ele.style.borderStyle ? ele.style.borderStyle : null, 'border-width': (ele.style.borderWidth != 0 ? (ele.style.borderWidth +'px'): null), 'border-color': ( ele.style.borderWidth?  ele.style.borderColor: null ), 'border-radius': (ele.style.borderRadius ? ele.style.borderRadius : null ) }"
+                        class="flex place-content-center items-center text-indigo-900">
+                        <mat-icon
+                            [ngStyle]="{'width': (ele.style.width > ele.style.height ? ele.style.height/2 : ele.style.width/2)+'px', 'height': (ele.style.width > ele.style.height ? ele.style.height/2 : ele.style.width/2)+'px', 'font-size': (ele.style.width > ele.style.height ? ele.style.height/2 : ele.style.width/2)+'px', 'color': ele.style.textColor}">{{ele.icon?
+                            ele.icon : 'code'}}</mat-icon>
+                    </div>
+                </app-manage-meta-data>
+            </ng-container>
+            <ng-container *ngSwitchCase="ele.type == 'button'">
+                <app-manage-meta-data [metaData]="ele" [previewMode]="previewMode" [indexOfMeaData]="i">
+                    <button
+                        [ngStyle]="{'position': ele.style.position, 'top': ele.style.top+'px', 'left': ele.style.left+'px', 'width': ele.style.width+'px', 'height': ele.style.height+'px', 'font-size': ele.style.fontSize+'px', 'color': ele.style.textColor, 'background-color': ele.style.backGroundColorType == 'Mono Color'? ele.style.backGroundColor : null, 'background-image': ele.style.backGroundColorType == 'Line Gradient'? 'linear-gradient('+ele.style.linearGradientDirection+','+ele.style.fromBackgroundColor+','+ele.style.toBackgroundColor+')' :  null, 'border-style': ele.style.borderStyle ? ele.style.borderStyle : null, 'border-width': (ele.style.borderWidth != 0 ? (ele.style.borderWidth +'px'): null), 'border-color': ( ele.style.borderWidth?  ele.style.borderColor: null ), 'border-radius': (ele.style.borderRadius ? ele.style.borderRadius : null ) }"
+                        class="bg-black text-white rounded-md overflow-hidden ">{{ele.staticLabel? ele.staticLabel :
+                        ele.id}}</button>
+                </app-manage-meta-data>
+            </ng-container>
+            <ng-container *ngSwitchCase="ele.type == 'hrLine' || ele.type == 'vrLine'">
+                <app-manage-meta-data [metaData]="ele" [previewMode]="previewMode" [indexOfMeaData]="i">
+                    <div [ngStyle]="{'position': ele.style.position, 'top': ele.style.top+'px', 'left': ele.style.left+'px', 'width': ele.style.width+'px', 'height': ele.style.height+'px'}"
+                        class="flex place-content-center items-center">
+                        <hr
+                            [ngStyle]="{'width': ele.type == 'hrLine' ? ele.style.width+'px': '2px', 'height': ele.type == 'hrLine' ? '2px' : ele.style.height+'px', 'background-color': ele.style.backGroundColorType == 'Mono Color'? ele.style.backGroundColor : null, 'background-image': ele.style.backGroundColorType == 'Line Gradient'? 'linear-gradient('+ele.style.linearGradientDirection+','+ele.style.fromBackgroundColor+','+ele.style.toBackgroundColor+')' :  null}">
+                    </div>
+                </app-manage-meta-data>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+</div>

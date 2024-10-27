@@ -1,0 +1,86 @@
+<div class="group" id="manage-meta-data">
+    <div class="fixed bg-white cursor-default hidden text-slate-400 group-hover:!flex border hover:drop-shadow-[0_15px_30px_rgba(0,0,0,0.25)] border-slate-400 rounded-md"
+        [ngStyle]="{'top': (metaData.style.top.valueOf() - 42)+'px', 'left': (metaData.style.left.valueOf() + metaData.style.width.valueOf() - 90)+'px'}"
+        *ngIf="previewMode">
+        <mat-icon
+            class="p-5 !flex place-content-center items-center cursor-pointer hover:text-yellow-500 duration-200 ease-in-out"
+            (click)="update(metaData)">edit</mat-icon>
+        <hr class="w-[1px] h-auto bg-slate-400" />
+        <mat-icon
+            class="p-5 !flex place-content-center items-center cursor-pointer hover:text-red-700 duration-200 ease-in-out"
+            (click)="delete(metaData)">delete</mat-icon>
+    </div>
+
+    <div class="p-3" appDrag [previewMode]="previewMode" (dragstart)="onDragStart('drag',metaData,$event)"
+        (mouseenter)="capture($event, metaData, 'enter')" (mouseleave)="capture($event, metaData, 'leave')"
+        (drag)="onDrag('drag',metaData,$event)" (dragend)="onDragEnd('drag',metaData,$event)"
+        [ngClass]="{'!cursor-grabbing': grabbing && previewMode, '!cursor-grab': !grabbing && previewMode, 'border border-indigo-600 rounded-md group-hover:!border-[3px] group-hover:!border-fuchsia-600 border-dashed': previewMode}"
+        [ngStyle]="{'position': metaData.style.position, 'top': (metaData.style.top.valueOf() - 2)+'px', 'left': (metaData.style.left.valueOf() - 2)+'px', 'width': (metaData.style.width.valueOf() + 4)+'px', 'height': (metaData.style.height.valueOf() + 4)+'px'}">
+        <div id="legend"
+            class="flex place-content-between items-center bg-teal-500 text-white rounded-full px-3 py-[2px] z-[1] group-hover:hidden"
+            [ngStyle]="{'position': metaData.style.position, 'top': (metaData.style.top.valueOf() - 14)+'px', 'left': (metaData.style.left.valueOf() + 20)+'px'}"
+            *ngIf="previewMode">
+            {{metaData.id}}
+        </div>
+        <div id="legend"
+            class="w-[5.25rem] flex place-content-between items-center bg-gray-300/70 text-gray-500 group-hover:bg-fuchsia-600 group-hover:text-white rounded-full p-1 z-[1]"
+            [ngStyle]="{'position': metaData.style.position, 'top': (metaData.style.top.valueOf() + metaData.style.height.valueOf() + 3)+'px', 'left': ((metaData.style.left.valueOf() + (metaData.style.width.valueOf()/2) - 42))+'px'}"
+            *ngIf="previewMode">
+            <span class="text-[0.75rem] mx-1 flex place-content-between items-center">
+                <div class="w-7 flex place-content-center items-center">{{metaData.style.width.valueOf()}}</div>
+                <mat-icon class="!w-[0.75rem] !h-[0.75rem] !text-[0.75rem]">close</mat-icon>
+                <div class="w-7 flex place-content-center items-center">{{metaData.style.height.valueOf()}}</div>    
+            </span>
+        </div>
+        <div id="resize-pointers" *ngIf="previewMode">
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-nwse-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-300 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="top-left" appDrag [previewMode]="previewMode" (dragstart)="onDragStart('top-left',metaData,$event)"
+                (drag)="onDrag('top-left',metaData,$event)" (dragend)="onDragEnd('top-left',metaData,$event)"
+                [ngStyle]="{'top': (metaData.style.top.valueOf() - 12)+'px', 'left': (metaData.style.left.valueOf() - 10 )+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-row-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-300 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="top-middle" appDrag [previewMode]="previewMode"
+                (dragstart)="onDragStart('top-middle',metaData,$event)" (drag)="onDrag('top-middle',metaData,$event)"
+                (dragend)="onDragEnd('top-middle',metaData,$event)"
+                [ngStyle]="{'top': (metaData.style.top.valueOf() - 12)+'px', 'left': ((metaData.style.left.valueOf() + (metaData.style.width.valueOf()/2) - 10))+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-nesw-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-300 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="top-right" appDrag [previewMode]="previewMode"
+                (dragstart)="onDragStart('top-right',metaData,$event)" (drag)="onDrag('top-right',metaData,$event)"
+                (dragend)="onDragEnd('top-right',metaData,$event)"
+                [ngStyle]="{'top': (metaData.style.top.valueOf() - 12)+'px', 'left': (metaData.style.left.valueOf() + metaData.style.width.valueOf() - 10)+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-col-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-300 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="middle-right" appDrag [previewMode]="previewMode"
+                (dragstart)="onDragStart('middle-right',metaData,$event)"
+                (drag)="onDrag('middle-right',metaData,$event)" (dragend)="onDragEnd('middle-right',metaData,$event)"
+                [ngStyle]="{'top': ((metaData.style.top.valueOf() + (metaData.style.height.valueOf()/2) - 10))+'px', 'left': (metaData.style.left.valueOf() + metaData.style.width.valueOf() - 10)+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-nwse-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-300 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="bottom-right" appDrag [previewMode]="previewMode"
+                (dragstart)="onDragStart('bottom-right',metaData,$event)"
+                (drag)="onDrag('bottom-right',metaData,$event)" (dragend)="onDragEnd('bottom-right',metaData,$event)"
+                [ngStyle]="{'top': (metaData.style.top.valueOf() + metaData.style.height.valueOf() - 12)+'px', 'left': (metaData.style.left.valueOf() + metaData.style.width.valueOf() - 10)+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-row-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-300 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="bottom-middle" appDrag [previewMode]="previewMode"
+                (dragstart)="onDragStart('bottom-middle',metaData,$event)"
+                (drag)="onDrag('bottom-middle',metaData,$event)" (dragend)="onDragEnd('bottom-middle',metaData,$event)"
+                [ngStyle]="{'top': (metaData.style.top.valueOf() + metaData.style.height.valueOf() - 12)+'px', 'left': ((metaData.style.left.valueOf() + (metaData.style.width.valueOf()/2) - 10))+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-nesw-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-300 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="bottom-left" appDrag [previewMode]="previewMode"
+                (dragstart)="onDragStart('bottom-left',metaData,$event)" (drag)="onDrag('bottom-left',metaData,$event)"
+                (dragend)="onDragEnd('bottom-left',metaData,$event)"
+                [ngStyle]="{'top': (metaData.style.top.valueOf() + metaData.style.height.valueOf() - 12)+'px', 'left': (metaData.style.left.valueOf() - 10)+'px'}">brightness_1</mat-icon>
+            <mat-icon
+                class="fixed rounded-full z-50 cursor-col-resize !w-5 !h-5 text-xl leading-3 flex place-content-center items-center text-slate-300 bg-white hover:text-blue-700 invisible group-hover:!visible"
+                id="middle-left" appDrag [previewMode]="previewMode"
+                (dragstart)="onDragStart('middle-left',metaData,$event)" (drag)="onDrag('middle-left',metaData,$event)"
+                (dragend)="onDragEnd('middle-left',metaData,$event)"
+                [ngStyle]="{'top': ((metaData.style.top.valueOf() + (metaData.style.height.valueOf()/2) - 10))+'px', 'left': (metaData.style.left.valueOf() - 10)+'px'}">brightness_1</mat-icon>
+        </div>
+        <ng-content></ng-content>
+    </div>
+</div>

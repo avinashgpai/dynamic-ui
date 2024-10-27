@@ -1,0 +1,6 @@
+<div id="alignment-ref">
+    <div *ngIf="refCoordinates && refCoordinates.top"  class="fixed h-[1px] border border-pink-400 border-dashed left-0" [ngStyle]="{'top': refCoordinates.top.top +'px', 'left': refCoordinates.top.left +'px', 'width': refCoordinates.top.width +'px'}" id="top"></div>
+    <div *ngIf="refCoordinates && refCoordinates.right" class="fixed w-[1px] border border-pink-400 border-dashed top-0" [ngStyle]="{'top': refCoordinates.right.top +'px', 'left': refCoordinates.right.left +'px', 'height': refCoordinates.right.height +'px'}" id="right"></div>
+    <div *ngIf="refCoordinates && refCoordinates.bottom" class="fixed h-[1px] border border-pink-400 border-dashed left-0" [ngStyle]="{'top': refCoordinates.bottom.top +'px', 'left': refCoordinates.bottom.left +'px', 'width': refCoordinates.bottom.width +'px'}" id="bottom"></div>
+    <div *ngIf="refCoordinates && refCoordinates.left" class="fixed w-[1px] border border-pink-400 border-dashed top-0" [ngStyle]="{'top': refCoordinates.left.top +'px', 'left': refCoordinates.left.left +'px', 'height': refCoordinates.left.height +'px'}" id="left"></div>
+</div>

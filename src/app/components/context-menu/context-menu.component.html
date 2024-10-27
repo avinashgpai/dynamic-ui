@@ -1,0 +1,43 @@
+<div id="context-menu" class="fixed z-[1] bg-white p-2 w-56 shadow-lg border border-blue-700 rounded-md hover:cursor-default origin-top-left duration-300 ease-in-out" [ngClass]="{'scale-100':open, 'scale-0':!open}" [style]="'top:'+top+'; left:'+left">
+    <div class="absolute top-8 p-2 flex place-content-center items-center text-indigo-800 rounded-full bg-white border border-indigo-800 hover:scale-110 hover:shadow-[0_0_20px_-8px_#0000aa] cursor-pointer duration-200 ease-in-out" [ngClass]="{'left-[14.5rem]': xQuadrant == -1, 'left-[-3rem]': xQuadrant == 1}" (click)="selectOption($event, 'close', null)">
+        <mat-icon>close</mat-icon>
+    </div>
+    <ng-container *ngTemplateOutlet="menuList; context: { $implicit: contextMenuList }">
+    </ng-container>
+</div>
+
+<ng-template #menuList let-eles>
+    <ng-container *ngFor="let ele of eles">
+        <ng-container *ngIf="ele.options && ele.options.length > 0">
+            <div class="flex place-content-between p-1 py-2 rounded-md hover:bg-blue-200/50 hover:text-blue-800 cursor-pointer hover:scale-[1.03] text-gray-400 duration-300 ease-in-out" [ngClass]="{'flex-row-reverse': xQuadrant == 1}" (mouseenter)="hoverTile($event, ele.level, ele.value)">
+                <div class="relative flex place-content-start items-center">
+                    <mat-icon *ngIf="ele.icon" [class]="ele.rotation? ele.rotation+' '+(ele.animate? ele.animate: ''): ''+(ele.animate? ele.animate: '')">{{ele.icon}}</mat-icon> 
+                    <span *ngIf="ele.iconLike">{{ele.iconLike}} </span>
+                    <span class="ml-2">{{ele.display}}</span>
+                    <div *ngIf="ele.info" class="ml-5 flex place-content-center items-center group">
+                        <mat-icon class="text-[16px] !w-4 !h-4">info</mat-icon>
+                        <div class="absolute flex flex-col place-content-center items-center bottom-7 max-w-80 min-w-48 z-10 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm tooltip invisible opacity-0 group-hover:visible group-hover:opacity-100">
+                            <div>
+                                {{ele.info}}
+                            </div>
+                            <mat-icon class="text-gray-900 absolute -bottom-4 text-[32px] !w-8 !h-8">arrow_drop_down</mat-icon>
+                        </div>
+                    </div>
+                </div>
+                <mat-icon>{{xQuadrant == -1?'keyboard_arrow_right':'keyboard_arrow_left'}}</mat-icon>
+                <div class="absolute z-[1] bg-white p-2 w-56 shadow-lg border border-blue-700 rounded-md hover:cursor-default" [ngClass]="{'hidden':!ele.show, 'top-1':yQuadrant == -1, '-bottom-10':yQuadrant == 1, 'left-44':xQuadrant == -1, 'right-44':xQuadrant == 1}">
+                    <ng-container *ngTemplateOutlet="menuList; context: { $implicit: ele.options }"></ng-container>
+                </div>
+            </div>
+
+        </ng-container>
+        <ng-container *ngIf="ele.value != 'hr' && (!ele.options || ( ele.options && ele.options.length == 0))" class="">
+            <div class=" relative flex place-content-start items-center p-1 py-2 rounded-md hover:bg-blue-200/50 hover:text-blue-800 cursor-pointer hover:scale-[1.03] text-gray-400 duration-300 ease-in-out" [ngClass]="{'!place-content-end': xQuadrant == 1}" (mouseenter)="hoverTile($event, ele.level, ele.value)" (click)="selectOption($event, ele.value, ele.display)">
+                <mat-icon *ngIf="ele.icon" [class]="ele.rotation? ele.rotation+' '+(ele.animate? ele.animate: ''): ''+(ele.animate? ele.animate: '')">{{ele.icon}}</mat-icon>
+                <span *ngIf="ele.iconLike">{{ele.iconLike}} </span> 
+                <span class="ml-2">{{ele.display}}</span>
+            </div>    
+        </ng-container>
+        <hr *ngIf="ele.value == 'hr'"  class="w-full bg-gray-400 my-1">
+    </ng-container>
+</ng-template>

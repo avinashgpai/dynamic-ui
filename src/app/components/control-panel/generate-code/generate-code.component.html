@@ -1,0 +1,13 @@
+<div class="fixed top-20 left-5 z-40" id="generate-code">
+    <div class="group">
+        <div [ngClass]="{'translate-x-0': !previewMode, '-translate-x-20': previewMode}"
+            class="p-2 scale-110 flex place-content-center items-center rounded-full hover:scale-125 cursor-pointer shadow-lg border border-indigo-500 hover:bg-indigo-700 hover:border-indigo-700 hover:text-white text-indigo-500 duration-300 ease-in-out" (click)="generateCode()">
+            <mat-icon>description</mat-icon>
+        </div>
+        <div [ngClass]="{'translate-x-0': !previewMode, '-translate-x-96': previewMode}"
+            class="absolute flex flex-col place-content-center items-center bottom-0.5 left-14 max-w-80 min-w-36 z-10 px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg shadow-sm tooltip invisible opacity-0 group-hover:visible group-hover:opacity-100 duration-300 ease-in-out">
+            <div>Generate Code</div>
+            <mat-icon class="text-gray-700 absolute bottom-0 -left-[18px] text-[32px] !w-8 !h-8">arrow_left</mat-icon>
+        </div>
+    </div>
+</div>

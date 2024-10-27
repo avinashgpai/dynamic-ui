@@ -1,0 +1,18 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: 10 120 167;
+  --secondary-color: 87 200 248;
+  --secondary-color-light: 239 250 255;
+  --tertiary-color: 77 182 237;
+  --accent-text-color: 255 255 255;
+  --accent-color: 253 186 140;
+  --body-text-color: 71 71 71;
+  --field-border: 168 168 168;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: "Helvetica Neue", "Source Sans 3", sans-serif; }
